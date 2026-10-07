@@ -1,8 +1,7 @@
 # Demand Forecasting
 
 Application web de prévision de la demande par produit. L’interface permet
-d’importer un fichier CSV, d’explorer les données et de générer des prévisions
-sur 7, 30 ou 90 jours.
+d’importer un fichier CSV, d’explorer les données et de générer des prévisions.
 
 Le projet est composé de deux parties :
 
@@ -159,13 +158,3 @@ python .\evaluate_models.py
 ```
 
 Les résultats sont écrits dans `evaluation_results.csv`.
-
-## Dépannage
-
-- **Erreur de connexion à l’API** : vérifier que `api_forecast.py` est lancé et
-  que le port `5000` est disponible.
-- **Erreur de validation CSV** : vérifier la présence de `Product`, `ds` et `y`.
-- **Erreur Prophet ou sklearn** : vérifier que l’environnement virtuel est
-  activé et que les dépendances Python sont installées.
-- **Certificat HTTPS local** : utiliser l’URL HTTP `http://localhost:5268` ou
-  faire confiance au certificat de développement .NET.

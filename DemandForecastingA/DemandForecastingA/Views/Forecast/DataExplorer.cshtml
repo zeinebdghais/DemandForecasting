@@ -1,0 +1,180 @@
+﻿@model System.Data.DataTable
+@{
+    ViewData["Title"] = "Data Explorer";
+}
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+<link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css">
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+
+<div class="container mt-5" style="background-color:#f8f9fa; min-height:100vh; padding-bottom:50px;">
+
+
+    <div class="text-center mb-5">
+        <i class="bi bi-bar-chart-line-fill" style="font-size:3rem; color:#41BCE6;"></i>
+        <h1 class="d-inline ms-3 fw-bold" style="font-size:2.4rem;">Data Explorer</h1>
+    </div>
+
+
+    <form asp-action="Dashboard" asp-controller="Forecast" method="post" class="mb-4">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-center gap-3 p-3 bg-white border rounded-4">
+            <div class="flex-grow-1">
+                <label for="presetPeriod" class="form-label fw-semibold mb-1">Forecast Horizon</label>
+                <select class="form-select custom-select" id="presetPeriod" name="period">
+                    <option value="7">Next 7 Days</option>
+                    <option value="30">Next 1 Month</option>
+                    <option value="90">Next 3 Months</option>
+                </select>
+            </div>
+            <div>
+                <button type="submit" class="btn custom-btn px-4 fw-semibold ripple-btn">
+                    Generate Forecast
+                </button>
+            </div>
+        </div>
+    </form>
+
+    <!-- Tableau CSV filtré -->
+    <div class="table-responsive bg-white border rounded-4 p-3">
+        <table id="csvTable" class="table table-striped table-hover mb-0">
+            <thead>
+                <tr>
+                    <th>Product</th>
+                    <th>Date</th>
+                    <th>Units Sold</th>
+                    <!--<th>Temperature</th>-->
+                    <th>Price</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (System.Data.DataRow row in Model.Rows)
+                {
+                    <tr>
+                        <td>@row["Product"]</td>
+                        <td>@row["ds"]</td>
+                        <td>@row["y"]</td>
+                        <td>@row["price"]</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+<div id="loadingOverlay">
+    <div data-mdb-loading-init data-mdb-parent-selector="#loading-test">
+        <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+        <span class="loading-text">Generating Forecast, please wait...</span>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#csvTable').DataTable({
+                "pageLength": 10,
+                "lengthMenu": [5, 10, 20, 50],
+                "order": [[1, "asc"]],
+                "columnDefs": [
+                    { "type": "date", "targets": 1 }
+                ]
+            });
+
+            $('form').on('submit', function () {
+                $('#loadingOverlay').fadeIn(200).css("display", "flex");
+                $(this).find('button[type="submit"]').prop('disabled', true);
+            });
+        });
+    </script>
+}
+
+<style>
+    body {
+        background-color: #f8f9fa;
+        font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+    }
+
+    .custom-select {
+        border-radius: 12px;
+        border: 1.5px solid #dee2e6;
+        padding: 0.55rem 1rem;
+        font-size: 0.95rem;
+        font-weight: 500;
+        color: #212529;
+        background-color: #fff;
+        transition: all 0.25s ease-in-out;
+        appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg width='12' height='8' viewBox='0 0 12 8' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1.41 0L6 4.58 10.59 0 12 1.41 6 7.41 0 1.41z' fill='%236c757d'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 0.9rem center;
+        background-size: 14px;
+    }
+
+        .custom-select:hover {
+            border-color: #41BCE6;
+        }
+
+        .custom-select:focus {
+            border-color: #41BCE6;
+            outline: none;
+        }
+
+    .custom-btn {
+        margin-top: 27px;
+        border-radius: 12px;
+        padding: 0.65rem 1.6rem;
+        background: linear-gradient(90deg, #41BCE6, #2daed4);
+        border: none;
+        color: #fff;
+        font-size: 1rem;
+        transition: all 0.3s ease-in-out;
+    }
+
+        .custom-btn:hover {
+            background: linear-gradient(90deg, #2daed4, #2499bb);
+        }
+
+    table.table-striped tbody tr:hover {
+        background-color: #e8faff;
+    }
+
+    table th {
+        background: none !important;
+        color: #495057;
+        font-weight: 600;
+        border-bottom: 2px solid #dee2e6;
+        text-transform: uppercase;
+        font-size: 0.9rem;
+    }
+
+    table td {
+        vertical-align: middle;
+        font-size: 0.95rem;
+    }
+
+    #loadingOverlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(255,255,255,0.6);
+        backdrop-filter: blur(6px);
+        display: none;
+        justify-content: center;
+        align-items: center;
+        z-index: 5000;
+        flex-direction: column;
+    }
+
+    .loading-text {
+        font-size: 1.3rem;
+        font-weight: 600;
+        color: #0F2743;
+    }
+</style>

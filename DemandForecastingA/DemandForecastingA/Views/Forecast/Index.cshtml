@@ -1,0 +1,129 @@
+﻿@{
+    ViewData["Title"] = "Demand Forecasting";
+}
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
+<div class="container mt-5" style="background-color:#f8f9fa; min-height:100vh; padding-bottom:50px;">
+
+    <!-- Header -->
+    <div class="text-center mb-5">
+        <i class="bi bi-bar-chart-line-fill" style="font-size:3rem; color:#41BCE6;"></i>
+        <h1 class="d-inline ms-3 fw-bold" style="font-size:2.5rem;">Demand Forecasting</h1>
+    </div>
+
+    <!-- CSV Upload Card -->
+    <div class="upload-card p-4 mb-5 border-start border-5 rounded shadow bg-white custom-border">
+        <h4 class="mb-3 fw-semibold">Import your CSV file</h4>
+
+        @if (ViewBag.Error != null)
+        {
+            <div class="alert alert-danger">@ViewBag.Error</div>
+        }
+
+        <!-- ✅ Correction ici : Upload -->
+        <form asp-action="Index" asp-controller="Forecast" method="post" enctype="multipart/form-data">
+            <div class="d-flex align-items-center gap-3">
+                <input type="file" class="form-control" name="file" accept=".csv" required />
+                <button type="submit" class="btn custom-btn px-4 fw-semibold ripple-btn">Upload</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Documentation Section -->
+    <!-- Documentation Section -->
+    <div class="mt-5">
+        <h4 class="mb-4 text-center fw-bold" style="color:#343a40;">How to Use the App</h4>
+
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+
+            <div class="col d-flex">
+                <div class="doc-card p-4 rounded shadow-sm text-center d-flex flex-column justify-content-between h-100 hover-card gradient-card w-100">
+                    <i class="bi bi-upload mb-2 icon-animate" style="font-size:2.5rem; color:#41BCE6;"></i>
+                    <h6 class="fw-bold">Upload CSV</h6>
+                    <p class="flex-grow-1">Select your CSV file containing your sales data.</p>
+                </div>
+            </div>
+
+            <div class="col d-flex">
+                <div class="doc-card p-4 rounded shadow-sm text-center d-flex flex-column justify-content-between h-100 hover-card gradient-card w-100">
+                    <i class="bi bi-bar-chart-line-fill mb-2 icon-animate" style="font-size:2.5rem; color:#41BCE6;"></i>
+                    <h6 class="fw-bold">Explore Data</h6>
+                    <p class="flex-grow-1">View your uploaded data and select the forecast horizon.</p>
+                </div>
+            </div>
+
+            <div class="col d-flex">
+                <div class="doc-card p-4 rounded shadow-sm text-center d-flex flex-column justify-content-between h-100 hover-card gradient-card w-100">
+                    <i class="bi bi-graph-up mb-2 icon-animate" style="font-size:2.5rem; color:#41BCE6;"></i>
+                    <h6 class="fw-bold">Generate Forecast</h6>
+                    <p class="flex-grow-1">Visualize the demand predictions and use filters to refine results.</p>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<style>
+    body {
+        background-color: #f8f9fa;
+    }
+
+    /* Remplace le bleu Bootstrap par #41BCE6 */
+    .custom-btn {
+        background-color: #41BCE6;
+        border-color: #41BCE6;
+        color: white;
+    }
+
+        .custom-btn:hover {
+            background-color: #2daed4;
+            border-color: #2daed4;
+        }
+
+    .custom-border {
+        border-left-color: #41BCE6 !important;
+    }
+
+    .upload-card input[type="file"] {
+        flex: 1;
+    }
+
+    .ripple-btn {
+        position: relative;
+        overflow: hidden;
+        transition: all 0.3s;
+    }
+
+        .ripple-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+        }
+
+    .doc-card h6 {
+        margin-top: 0.5rem;
+        margin-bottom: 0.5rem;
+        color: #343a40;
+    }
+
+    .doc-card p {
+        font-size: 0.9rem;
+        color: #495057;
+    }
+
+    .hover-card {
+        transition: all 0.3s;
+    }
+
+        .hover-card:hover {
+            transform: translateY(-6px) rotate(-0.5deg);
+            box-shadow: 0 15px 25px rgba(0,0,0,0.18);
+        }
+
+    .gradient-card {
+        background: linear-gradient(135deg, #ffffff, #e9f0ff);
+    }
+</style>

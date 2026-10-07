@@ -1,0 +1,74 @@
+﻿@model List<DemandForecastingA.Models.Prediction>
+@using Newtonsoft.Json
+
+@{
+    ViewData["Title"] = "Forecast Results";
+}
+
+<div class="container mt-5">
+    <h2 class="mb-4 text-center text-primary">Forecast Results</h2>
+
+    @if (Model == null || !Model.Any())
+    {
+        <div class="alert alert-warning">No predictions available.</div>
+    }
+    else
+    {
+        <!-- Tableau -->
+        <table class="table table-bordered table-striped">
+            <thead class="table-primary">
+                <tr>
+                    <th>Date</th>
+                    <th>Prophet</th>
+                    <th>RF Correction</th>
+                    <th>Final Hybrid</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var pred in Model)
+                {
+                    <tr>
+                        <td>@pred.ds</td>
+                        <td>@pred.Prophet_Pred</td>
+                        <td>@pred.RF_Correction</td>
+                        <td class="fw-bold text-success">@pred.Final_Hybrid</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <!-- Graphique -->
+        <canvas id="forecastChart" height="100"></canvas>
+    }
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    var ctx = document.getElementById('forecastChart').getContext('2d');
+    var chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: @Html.Raw(JsonConvert.SerializeObject(Model.Select(m => m.ds))),
+            datasets: [
+                {
+                    label: 'Prophet Prediction',
+                    borderColor: 'blue',
+                    data: @Html.Raw(JsonConvert.SerializeObject(Model.Select(m => m.Prophet_Pred))),
+                    fill: false
+                },
+                {
+                    label: 'RF Correction',
+                    borderColor: 'orange',
+                    data: @Html.Raw(JsonConvert.SerializeObject(Model.Select(m => m.RF_Correction))),
+                    fill: false
+                },
+                {
+                    label: 'Final Hybrid',
+                    borderColor: 'green',
+                    data: @Html.Raw(JsonConvert.SerializeObject(Model.Select(m => m.Final_Hybrid))),
+                    fill: false
+                }
+            ]
+        }
+    });
+</script>
